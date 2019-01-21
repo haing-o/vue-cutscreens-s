@@ -1,5 +1,5 @@
 <template>
-    <button class="mybutton">{{ value }}</button>
+    <a href="javascript:void (0)" class="mybutton">{{ value }}</a>
 </template>
 
 <script>
@@ -16,14 +16,17 @@
 
 <style lang="less" scoped>
     .mybutton {
+        display: inline-block;
         width: 200px;
         height: 80px;
+        line-height: 80px;
+        text-align: center;
         background-color: #707477;
         color: #fff;
         font-size: 25px;
         border: none;
         border-radius: 10px;
-        transition: background-color .3s;
+        transition: background-color .4s;
         cursor: pointer;
         margin: 10px 0;
         &:hover {

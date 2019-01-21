@@ -1,24 +1,41 @@
 <template>
   <div id="app">
     <div class="nav">
-      <keep-alive>
-        <component class="link" :is="currentCom">Upload Pic</component>
-      </keep-alive>
+      <a v-for="tab in tabs"
+         @click="shiftCom(tab)"
+         class="link"
+         :class="[{ 'choose': currentCom == tab }]">
+        {{ tab }}
+      </a>
     </div>
+    <keep-alive>
+      <component :is="currentCom">Upload Pic</component>
+    </keep-alive>
   </div>
 </template>
 
 <script>
-  import uploadPic from '@/views/uploadPic.vue'
+  import Upload from '@/views/uploadPic.vue'
+  import Completed from '@/views/completedPic.vue'
   export default {
       name: 'cutSreen',
       data() {
           return {
-              currentCom: uploadPic
+              currentCom: 'Upload',
+              tabs: ['Upload', 'Completed']
           }
       },
       components: {
-          uploadPic,
+          Upload,
+          Completed,
+      },
+      mounted() {
+
+      },
+      methods: {
+          shiftCom: function (tab) {
+              this.currentCom = tab;
+          }
       }
   }
 </script>
@@ -34,8 +51,11 @@
       height: 50px;
       line-height: 50px;
       color: #646464;
+      margin: 0 20px;
+      padding: 0 5px;
+    }
+    .choose {
       border-bottom: 2px solid #646464;
-      margin: 0 10px;
     }
   }
 }
