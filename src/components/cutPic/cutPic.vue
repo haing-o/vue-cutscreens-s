@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import store from "@/store";
 export default {
   name: "cutPic",
   mounted() {
@@ -26,24 +27,39 @@ export default {
     this.$nextTick(() => {
       // 初始化css属性，为了之后可以拿到数值
       this.$refs.shade.style.height =
-        parseInt(this.picHeight - this.height) + "px";
-      this.$refs.line.style.top = parseInt(this.picHeight - this.height) + "px";
+        parseInt(this.picHeight - this.cutHeight) + "px";
+      this.$refs.line.style.top =
+        parseInt(this.picHeight - this.cutHeight) + "px";
     });
   },
-  props: {
-    // 需要截出来的高度，由父组件传入
-    height: {
-      type: Number,
-      default: 100
-    }
-  },
+  store,
+  // 使用vuex，就不需要父子组件传值了
+  // props: {
+  //   // 需要截出来的高度，由父组件传入
+  //   height: {
+  //     type: Number,
+  //     default: 100
+  //   }
+  // },
   data() {
     return {
       src: "",
       isDrag: false
     };
   },
+  watch: {
+    cutHeight(newH) {
+      this.$refs.shade.style.height =
+        parseInt(this.picHeight - newH) + "px";
+      this.$refs.line.style.top =
+        parseInt(this.picHeight - newH) + "px";
+    }
+  },
   computed: {
+    // 裁剪高度
+    cutHeight() {
+      return this.$store.state.height;
+    },
     // 图片高度
     picHeight() {
       return parseInt(this.$refs.wholePic.clientHeight);
@@ -74,8 +90,8 @@ export default {
       this.isDrag = false;
       var bottom = this.picHeight - parseInt(this.$refs.shade.clientHeight);
       console.log("bottom: " + bottom);
-      this.$emit('changeHeight', bottom);
-      // this.style.height = parseFloat(e.pageY) - 107;
+      // 修改state里的height
+      this.$store.commit("changeHeight", bottom);
     }
   }
 };

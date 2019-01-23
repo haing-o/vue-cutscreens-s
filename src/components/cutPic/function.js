@@ -3,11 +3,8 @@ import cutPic from './cutPic.vue'
 
 const cutPicConstructor = Vue.extend(cutPic); // extend使我们可以通过new方法创建一个组件（参数为对象）
 
-var cutPicFn = (src, height) => {
+var cutPicFn = (src) => {
     var instance = new cutPicConstructor({
-        propsData: {
-            height: height || 200
-        },
         data: {
             src: src || null
         }

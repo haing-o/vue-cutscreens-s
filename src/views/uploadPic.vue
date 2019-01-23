@@ -17,12 +17,12 @@
 <script>
 export default {
   name: "uploadPic",
-  data() {
-    return {
-      // 需要截出来的高度，传给每一个组件
-      height: 200
-    };
-  },
+  // data() {
+  //   return {
+  //     // 需要截出来的高度，传给每一个组件
+  //     height: 200
+  //   };
+  // },
   mounted() {
     // this.$refs.list.appendChild(this.$newCutPicFn());
   },
@@ -36,17 +36,18 @@ export default {
       }
       var file = files[0];
       var reader = new FileReader();
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); // 上传图片
       reader.onload = function(e) {
-        var src = e.target.result;
+        var src = e.target.result; // 图片的地址
         // var parent = document.createElement('div');
         // that.$refs.list.appendChild(parent);
         // that.$newCutPicFn(src, this.height, parent);
-        that.$refs.list.appendChild(that.$newCutPicFn(src, this.height))
+        that.$refs.list.appendChild(that.$newCutPicFn(src))
         setTimeout(function() {
           window.scrollTo(0, document.body.scrollHeight);
         }, 0);
-        event.target.value = null; //清除已上传的文件信息
+        // 清除已上传的文件信息
+        event.target.value = null;
       };
     },
     // 清空所有已经上传的图片
