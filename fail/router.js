@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import uploadPic from './views/uploadPic.vue'
+import uploadPic from '../src/views/uploadPic.vue'
 
 Vue.use(Router)
 

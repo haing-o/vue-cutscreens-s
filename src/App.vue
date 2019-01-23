@@ -1,12 +1,13 @@
 <template>
   <div id="app">
     <div class="nav">
-      <a v-for="tab in tabs"
-         @click="shiftCom(tab)"
-         class="link"
-         :class="[{ 'choose': currentCom == tab }]">
-        {{ tab }}
-      </a>
+      <a
+        v-for="tab in tabs"
+        :key="tab"
+        @click="shiftCom(tab)"
+        class="link"
+        :class="[{ 'choose': currentCom == tab }]"
+      >{{ tab }}</a>
     </div>
     <keep-alive>
       <component :is="currentCom">Upload Pic</component>
@@ -15,29 +16,27 @@
 </template>
 
 <script>
-  import Upload from '@/views/uploadPic.vue'
-  import Completed from '@/views/completedPic.vue'
-  export default {
-      name: 'cutSreen',
-      data() {
-          return {
-              currentCom: 'Upload',
-              tabs: ['Upload', 'Completed']
-          }
-      },
-      components: {
-          Upload,
-          Completed,
-      },
-      mounted() {
-
-      },
-      methods: {
-          shiftCom: function (tab) {
-              this.currentCom = tab;
-          }
-      }
+import Upload from "@/views/uploadPic.vue";
+import Completed from "@/views/completedPic.vue";
+export default {
+  name: "cutSreen",
+  data() {
+    return {
+      currentCom: "Upload",
+      tabs: ["Upload", "Completed"]
+    };
+  },
+  components: {
+    Upload,
+    Completed
+  },
+  mounted() {},
+  methods: {
+    shiftCom: function(tab) {
+      this.currentCom = tab;
+    }
   }
+};
 </script>
 
 <style lang="less" scoped>
@@ -53,9 +52,13 @@
       color: #646464;
       margin: 0 20px;
       padding: 0 5px;
+      font-size: 22px;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
     .choose {
-      border-bottom: 2px solid #646464;
+      border-bottom: 3px solid #646464;
     }
   }
 }
