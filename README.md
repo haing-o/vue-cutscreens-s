@@ -1,4 +1,4 @@
-# js-cutScreens-s
+# cutScreen
 
 ## Project setup
 ```
