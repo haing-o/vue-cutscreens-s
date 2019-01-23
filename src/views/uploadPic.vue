@@ -8,13 +8,14 @@
         Add
         <input @change="addPic($event)" ref="selectedPic" class="upload-btn" type="file">
       </a>
-      <a href="javascript:void (0)" class="mybutton">Start !</a>
+      <a href="javascript:void (0)" class="mybutton" @click="startCut">Start !</a>
       <a href="javascript:void (0)" class="mybutton reset-btn" @click="resetPic">Reset</a>
     </div>
   </div>
 </template>
 
 <script>
+import store from "@/store";
 export default {
   name: "uploadPic",
   // data() {
@@ -23,6 +24,7 @@ export default {
   //     height: 200
   //   };
   // },
+  store,
   mounted() {
     // this.$refs.list.appendChild(this.$newCutPicFn());
   },
@@ -42,7 +44,11 @@ export default {
         // var parent = document.createElement('div');
         // that.$refs.list.appendChild(parent);
         // that.$newCutPicFn(src, this.height, parent);
-        that.$refs.list.appendChild(that.$newCutPicFn(src))
+        // 将图片添加入state
+        var img = new Image();
+        img.src = src;
+        that.$store.commit("addImg", img);
+        that.$refs.list.appendChild(that.$newCutPicFn(src));
         setTimeout(function() {
           window.scrollTo(0, document.body.scrollHeight);
         }, 0);
@@ -59,6 +65,42 @@ export default {
         i++;
       }
       pics = null;
+      this.$store.commit("clearImgs");
+    },
+    // 开始合成图片
+    startCut() {
+      // 创建canvas
+      var canvas = document.createElement("canvas");
+      var context = canvas.getContext("2d");
+      var images = this.$store.state.images;
+      var h = this.$store.state.height;
+      // 换算高宽比例
+      var changedH = img => {
+        if (img.width <= 1000) {
+          return h;
+        } else {
+          return (img.width / 1000) * h;
+        }
+      };
+      canvas.width = 1000;
+      canvas.height = h * images.length;
+      for (let i = 0; i < images.length; i++) {
+        var img = images[i];
+        context.drawImage(
+          img,
+          0,
+          img.height - changedH(img),
+          img.width,
+          changedH(img),
+          0,
+          i * h,
+          img.width >= 1000 ? 1000 : img.width,
+          h
+        );
+      }
+      var src = canvas.toDataURL();
+      this.$store.commit("setSrc", src);
+      this.$store.commit("changeCurrent", "Completed");
     }
   }
 };

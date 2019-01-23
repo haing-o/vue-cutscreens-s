@@ -6,11 +6,11 @@
         :key="tab"
         @click="shiftCom(tab)"
         class="link"
-        :class="[{ 'choose': currentCom == tab }]"
+        :class="[{ 'choose': $store.state.currentCom == tab }]"
       >{{ tab }}</a>
     </div>
-    <keep-alive>
-      <component :is="currentCom">Upload Pic</component>
+    <keep-alive exclude="Completed">
+      <component :is="$store.state.currentCom">Upload Pic</component>
     </keep-alive>
   </div>
 </template>
@@ -18,14 +18,16 @@
 <script>
 import Upload from "@/views/uploadPic.vue";
 import Completed from "@/views/completedPic.vue";
+import store from "@/store"
 export default {
   name: "cutSreen",
   data() {
     return {
-      currentCom: "Upload",
+      // currentCom: "Upload",
       tabs: ["Upload", "Completed"]
     };
   },
+  store,
   components: {
     Upload,
     Completed
@@ -33,7 +35,7 @@ export default {
   mounted() {},
   methods: {
     shiftCom: function(tab) {
-      this.currentCom = tab;
+      this.$store.commit('changeCurrent', tab);
     }
   }
 };

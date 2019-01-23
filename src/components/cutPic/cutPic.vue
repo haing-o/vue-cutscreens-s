@@ -7,7 +7,7 @@
     @mouseup="stopDrag($event)"
   >
     <!-- <img src="../../img/kate.jpg"> -->
-    <img :src="src" alt="img">
+    <img :src="src" alt="img" class="image">
     <div class="cut-line">
       <div ref="shade" class="shade"></div>
       <span ref="line" class="shift-line">
@@ -25,7 +25,7 @@ export default {
     // 如果不是nextTick, 拿不到clientHeight
     // nextTick是保证子组件也已经渲染完毕
     this.$nextTick(() => {
-      // 初始化css属性，为了之后可以拿到数值
+      // 初始化css属性，为了之后可以拿到并设置数值
       this.$refs.shade.style.height =
         parseInt(this.picHeight - this.cutHeight) + "px";
       this.$refs.line.style.top =
@@ -47,12 +47,11 @@ export default {
       isDrag: false
     };
   },
+  // 监听state的改变
   watch: {
     cutHeight(newH) {
-      this.$refs.shade.style.height =
-        parseInt(this.picHeight - newH) + "px";
-      this.$refs.line.style.top =
-        parseInt(this.picHeight - newH) + "px";
+      this.$refs.shade.style.height = parseInt(this.picHeight - newH) + "px";
+      this.$refs.line.style.top = parseInt(this.picHeight - newH) + "px";
     }
   },
   computed: {
