@@ -7,6 +7,13 @@ export default new Vuex.Store({
   state: {
     height: 200,
     images: [],
+    /*
+    {
+      imgList: img,
+      key: Date,
+      *cutheight: height 
+    }
+     */
     currentCom: 'Upload',
     completedSrc: '',
     delImg: {
@@ -17,6 +24,10 @@ export default new Vuex.Store({
   mutations: {
     changeHeight(state, newH) {
       state.height = newH;
+    },
+    changeSpHeight(state, payload) {
+      var i = payload.order;
+      state.images[i].cutheight = payload.height;
     },
     changeCurrent(state, newCurrent) {
       state.currentCom = newCurrent;

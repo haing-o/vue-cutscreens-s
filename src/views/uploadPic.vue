@@ -26,13 +26,13 @@ export default {
   },
   watch: {
     delImg(newFlag) {
-      if(newFlag) {
+      if (newFlag) {
         var list = this.$refs.list;
-        var picList = list.querySelectorAll('.pic-item');
+        var picList = list.querySelectorAll(".pic-item");
         list.removeChild(picList[this.$store.state.delImg.i]);
         setTimeout(() => {
-          this.$store.commit('afterDel');
-        }, 100)
+          this.$store.commit("afterDel");
+        }, 100);
       }
     }
   },
@@ -62,7 +62,7 @@ export default {
         var payload = {
           imgList: img,
           key: key
-        }
+        };
         that.$store.commit("addImg", payload);
         that.$refs.list.appendChild(that.$newCutPicFn(src, key));
         setTimeout(function() {
@@ -89,36 +89,67 @@ export default {
       var canvas = document.createElement("canvas");
       var context = canvas.getContext("2d");
       var images = this.$store.state.images;
-      var h = this.$store.state.height;
-      // 换算高宽比例
-      var changedH = img => {
-        if (img.width <= 1000) {
-          return h;
+      var comHeight = this.$store.state.height;
+      canvas.width = 1000;
+      // 循环图片数组，相加得到canvas的高。
+      var canvasHeight = 0;
+      for (let i = 0; i < images.length; i++) {
+        if (images[i].cutheight) {
+          canvasHeight += images[i].cutheight;
         } else {
-          return (img.width / 1000) * h;
+          canvasHeight += comHeight;
+        }
+      }
+      canvas.height = canvasHeight;
+      // 换算高宽比例
+      var changedH = (img, hei) => {
+        if (img.width <= 1000) {
+          return hei;
+        } else {
+          return (img.width / 1000) * hei;
         }
       };
-      canvas.width = 1000;
-      canvas.height = h * images.length;
+      // currentH:目前渲染到的高度
+      var currentH = 0;
+      // 遍历每一个图像，在canvas画布上画出来
       for (let i = 0; i < images.length; i++) {
-        var img = images[i].imgList;
-        context.drawImage(
-          img,
-          0,
-          img.height - changedH(img),
-          img.width,
-          changedH(img),
-          0,
-          i * h,
-          img.width >= 1000 ? 1000 : img.width,
-          h
-        );
+        var img = images[i];
+        var imgList = img.imgList;
+        if (img.cutheight) {
+          console.log("special");
+          context.drawImage(
+            imgList,
+            0,
+            imgList.height - changedH(imgList, img.cutheight),
+            imgList.width,
+            changedH(imgList, img.cutheight),
+            0,
+            currentH,
+            imgList.width >= 1000 ? 1000 : imgList.width,
+            img.cutheight
+          );
+          currentH += img.cutheight;
+        } else {
+          console.log("common");
+          context.drawImage(
+            imgList,
+            0,
+            imgList.height - changedH(imgList, comHeight),
+            imgList.width,
+            changedH(imgList, comHeight),
+            0,
+            currentH,
+            imgList.width >= 1000 ? 1000 : imgList.width,
+            comHeight
+          );
+          currentH += comHeight;
+        }
       }
+      // 将canvas画布转为jpeg的图片，将图片地址传给store。
       var src = canvas.toDataURL("image/jpeg", 1.0);
       this.$store.commit("setSrc", src);
       this.$store.commit("changeCurrent", "Completed");
-    },
-    
+    }
   }
 };
 </script>

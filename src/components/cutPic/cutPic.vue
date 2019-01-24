@@ -14,10 +14,16 @@
     <div class="cut-line">
       <div ref="shade" class="shade"></div>
       <span ref="line" class="shift-line">
-        <span ref="dragBtn" class="arrow dragMe">...</span>
+        <span :class="[{ 'choose': this.special == true }]" ref="dragBtn" class="arrow dragMe">...</span>
       </span>
     </div>
-    <div class="close-btn" @click.stop="delMyself()" @touchstart="delMyself()"></div>
+    <div class="close-btn" @click.stop="delMyself()" @touchstart.stop="delMyself()"></div>
+    <div
+      class="special-btn"
+      @click.stop="specialSelf()"
+      @touchstart.stop="specialSelf()"
+      :class="[{ 'choose': this.special == true }]"
+    ></div>
   </div>
 </template>
 
@@ -29,6 +35,13 @@ export default {
     // 如果不是nextTick, 拿不到clientHeight
     // nextTick是保证子组件也已经渲染完毕
     this.$nextTick(() => {
+      // 拿到本图片在所有图片中的顺序序号
+      var images = this.$store.state.images;
+      for (let i = 0; i < images.length; i++) {
+        if (images[i].key == this.key) {
+          this.order = i;
+        }
+      }
       // 初始化css属性，为了之后可以拿到并设置数值
       // 非chrome浏览器里在这里还拿不到clientHeight
       // 通过setTimeout延缓执行顺序
@@ -44,12 +57,14 @@ export default {
   store,
   data() {
     return {
-      src: "",
-      key: "",
-      isDrag: false
+      src: "", // 图片的地址
+      key: "", // 创建这张图片的时间
+      isDrag: false, // 鼠标是否按住
+      special: false, // 是否与其他图片共享切割高度
+      order: "" // 自己在所有图片中的位列序号
     };
   },
-  // 监听state的改变
+  // 监听state的改变，让自己的切割高度与state保持一致
   watch: {
     cutHeight(newH) {
       this.$refs.shade.style.height = parseInt(this.picHeight - newH) + "px";
@@ -82,7 +97,7 @@ export default {
     isDraging(e) {
       e.preventDefault();
       var bottom = this.picHeight - parseInt(this.$refs.line.offsetTop);
-      if (this.isDrag && bottom >= 0 && bottom <= this.picHeight) {
+      if (this.isDrag) {
         var pageY = e.pageY || e.targetTouches[0].pageY;
         var h = parseFloat(pageY) - 100 - this.offsetTop;
         this.$refs.shade.style.height = h + "px";
@@ -94,20 +109,27 @@ export default {
       e.preventDefault();
       this.isDrag = false;
       var bottom = this.picHeight - parseInt(this.$refs.shade.clientHeight);
-      // console.log("bottom: " + bottom);
+      console.log("bottom: " + bottom);
       // 修改state里的height
       if (e.target.className.indexOf("dragMe") != -1) {
-        this.$store.commit("changeHeight", bottom);
+        if (this.special) {
+          var payload = {
+            order: this.order,
+            height: bottom
+          };
+          this.$store.commit("changeSpHeight", payload);
+        } else {
+          this.$store.commit("changeHeight", bottom);
+        }
       }
     },
     // 删除自身
     delMyself() {
-      var images = this.$store.state.images;
-      for (let i = 0; i < images.length; i++) {
-        if (images[i].key == this.key) {
-          this.$store.commit("delImg", i);
-        }
-      }
+      this.$store.commit("delImg", this.order);
+    },
+    // 自身脱离高度一致队列
+    specialSelf() {
+      this.special = !this.special;
     }
   }
 };
@@ -159,23 +181,45 @@ export default {
         line-height: 5px;
         font-size: 30px;
         padding: 10px 0 30px;
+        transition: all 0.5s;
+        &.choose {
+          background-color: #868686;
+          color: #fff;
+        }
       }
     }
   }
   .close-btn {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     position: absolute;
     background-color: red;
     background: url("../../img/del.png") no-repeat center center / 100%;
-    opacity: 0.5;
-    left: -75px;
-    top: 20px;
+    opacity: 0.3;
+    left: -70px;
+    top: 120px;
     cursor: pointer;
     transition: all 1s;
     &:hover {
       opacity: 1;
-      transform: rotate(360deg);
+    }
+  }
+  .special-btn {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    background-color: red;
+    background: url("../../img/qi.png") no-repeat center center / 100%;
+    opacity: 0.3;
+    left: -75px;
+    top: 20px;
+    cursor: pointer;
+    transition: all 0.5s;
+    &:hover {
+      opacity: 1;
+    }
+    &.choose {
+      opacity: 1;
     }
   }
 }
