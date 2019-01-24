@@ -17,7 +17,7 @@
         <span ref="dragBtn" class="arrow dragMe">...</span>
       </span>
     </div>
-    <div class="close-btn" @click.stop="delMyself()"></div>
+    <div class="close-btn" @click.stop="delMyself()" @touchstart="delMyself()"></div>
   </div>
 </template>
 
@@ -149,7 +149,7 @@ export default {
         position: absolute;
         display: block;
         bottom: -20px;
-        right: 15px;
+        right: 200px;
         // transform: translate(-50%);
         width: 100px;
         border-radius: 10px;

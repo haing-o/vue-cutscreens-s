@@ -133,7 +133,7 @@ export default {
   .cut-pic-list {
     width: 1000px;
     min-height: 500px;
-    margin-left: 85px;
+    margin-left: 150px;
     border-radius: 20px;
     position: relative;
     transition: all 2s;
