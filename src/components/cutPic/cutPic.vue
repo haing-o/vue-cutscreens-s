@@ -2,9 +2,12 @@
   <div
     class="pic-item"
     ref="wholePic"
-    @mousemove="isDraging($event)"
+    @touchmove="isDraging($event)"
+    @touchstart="startDrag($event)"
+    @touchend="stopDrag($event)"
     @mousedown="startDrag($event)"
     @mouseup="stopDrag($event)"
+    @mousemove="isDraging($event)"
   >
     <!-- <img src="../../img/kate.jpg"> -->
     <img :src="src" alt="img" class="image">
@@ -83,7 +86,8 @@ export default {
     isDraging(e) {
       var bottom = this.picHeight - parseInt(this.$refs.line.offsetTop);
       if (this.isDrag && bottom >= 0 && bottom <= this.picHeight) {
-        var h = parseFloat(e.pageY) - 100 - this.offsetTop;
+        var pageY = e.pageY || e.changedTouches[0].pageY;
+        var h = parseFloat(pageY) - 100 - this.offsetTop;
         this.$refs.shade.style.height = h + "px";
         this.$refs.line.style.top = h + "px";
       }
@@ -93,7 +97,6 @@ export default {
       this.isDrag = false;
       var bottom = this.picHeight - parseInt(this.$refs.shade.clientHeight);
       console.log("bottom: " + bottom);
-      console.log(this.$refs.wholePic.clientHeight);
       // 修改state里的height
       this.$store.commit("changeHeight", bottom);
     }
@@ -127,7 +130,7 @@ export default {
       left: 0;
       top: 100px;
       width: 1000px;
-      height: 2px;
+      height: 3px;
       background-color: #fff;
       cursor: pointer;
       //   border: 2px solid #fff;
@@ -136,16 +139,16 @@ export default {
       .arrow {
         position: absolute;
         display: block;
-        bottom: -10px;
+        bottom: -20px;
         left: 50%;
-        width: 50px;
+        width: 100px;
         border-radius: 10px;
         background-color: #fff;
         text-align: center;
         color: #868686;
         line-height: 5px;
         font-size: 30px;
-        padding: 0 0 18px;
+        padding: 10px 0 30px;
       }
     }
   }
