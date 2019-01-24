@@ -26,10 +26,14 @@ export default {
     // nextTick是保证子组件也已经渲染完毕
     this.$nextTick(() => {
       // 初始化css属性，为了之后可以拿到并设置数值
-      this.$refs.shade.style.height =
-        parseInt(this.picHeight - this.cutHeight) + "px";
-      this.$refs.line.style.top =
-        parseInt(this.picHeight - this.cutHeight) + "px";
+      // 非chrome浏览器里在这里还拿不到clientHeight
+      // 通过setTimeout延缓执行顺序
+      setTimeout(() => {
+        this.$refs.shade.style.height =
+          parseInt(this.picHeight - this.cutHeight) + "px";
+        this.$refs.line.style.top =
+          parseInt(this.picHeight - this.cutHeight) + "px";
+      }, 0);
     });
   },
   store,
@@ -89,6 +93,7 @@ export default {
       this.isDrag = false;
       var bottom = this.picHeight - parseInt(this.$refs.shade.clientHeight);
       console.log("bottom: " + bottom);
+      console.log(this.$refs.wholePic.clientHeight);
       // 修改state里的height
       this.$store.commit("changeHeight", bottom);
     }
@@ -112,7 +117,7 @@ export default {
       left: 0;
       background-color: #000;
       width: 1000px;
-      height: 200px;
+      height: 100px;
       opacity: 0.4;
       transition: height 50ms;
     }
@@ -120,7 +125,7 @@ export default {
       display: block;
       position: absolute;
       left: 0;
-      top: 200px;
+      top: 100px;
       width: 1000px;
       height: 2px;
       background-color: #fff;

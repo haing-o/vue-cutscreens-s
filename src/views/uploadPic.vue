@@ -98,7 +98,7 @@ export default {
           h
         );
       }
-      var src = canvas.toDataURL();
+      var src = canvas.toDataURL("image/jpeg", 1.0);
       this.$store.commit("setSrc", src);
       this.$store.commit("changeCurrent", "Completed");
     }
