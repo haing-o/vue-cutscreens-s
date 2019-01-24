@@ -2,8 +2,8 @@
   <div
     class="pic-item"
     ref="wholePic"
-    @touchmove="isDraging($event)"
-    @touchstart="startDrag($event)"
+    @touchmove.stop="isDraging($event)"
+    @touchstart.stop="startDrag($event)"
     @touchend="stopDrag($event)"
     @mousedown="startDrag($event)"
     @mouseup="stopDrag($event)"
@@ -14,9 +14,10 @@
     <div class="cut-line">
       <div ref="shade" class="shade"></div>
       <span ref="line" class="shift-line">
-        <span class="arrow dragMe">...</span>
+        <span ref="dragBtn" class="arrow dragMe">...</span>
       </span>
     </div>
+    <div class="close-btn" @click.stop="delMyself()"></div>
   </div>
 </template>
 
@@ -39,18 +40,12 @@ export default {
       }, 0);
     });
   },
-  store,
   // 使用vuex，就不需要父子组件传值了
-  // props: {
-  //   // 需要截出来的高度，由父组件传入
-  //   height: {
-  //     type: Number,
-  //     default: 100
-  //   }
-  // },
+  store,
   data() {
     return {
       src: "",
+      key: "",
       isDrag: false
     };
   },
@@ -77,6 +72,7 @@ export default {
   methods: {
     // 鼠标按住
     startDrag(e) {
+      e.preventDefault();
       if (e.target.className.indexOf("dragMe") != -1) {
         this.isDrag = true;
       }
@@ -84,9 +80,10 @@ export default {
     // 鼠标移动
     // TODO: line移动到边界回不来
     isDraging(e) {
+      e.preventDefault();
       var bottom = this.picHeight - parseInt(this.$refs.line.offsetTop);
       if (this.isDrag && bottom >= 0 && bottom <= this.picHeight) {
-        var pageY = e.pageY || e.changedTouches[0].pageY;
+        var pageY = e.pageY || e.targetTouches[0].pageY;
         var h = parseFloat(pageY) - 100 - this.offsetTop;
         this.$refs.shade.style.height = h + "px";
         this.$refs.line.style.top = h + "px";
@@ -94,11 +91,23 @@ export default {
     },
     // 鼠标放开
     stopDrag(e) {
+      e.preventDefault();
       this.isDrag = false;
       var bottom = this.picHeight - parseInt(this.$refs.shade.clientHeight);
-      console.log("bottom: " + bottom);
+      // console.log("bottom: " + bottom);
       // 修改state里的height
-      this.$store.commit("changeHeight", bottom);
+      if (e.target.className.indexOf("dragMe") != -1) {
+        this.$store.commit("changeHeight", bottom);
+      }
+    },
+    // 删除自身
+    delMyself() {
+      var images = this.$store.state.images;
+      for (let i = 0; i < images.length; i++) {
+        if (images[i].key == this.key) {
+          this.$store.commit("delImg", i);
+        }
+      }
     }
   }
 };
@@ -140,7 +149,8 @@ export default {
         position: absolute;
         display: block;
         bottom: -20px;
-        left: 50%;
+        right: 15px;
+        // transform: translate(-50%);
         width: 100px;
         border-radius: 10px;
         background-color: #fff;
@@ -150,6 +160,22 @@ export default {
         font-size: 30px;
         padding: 10px 0 30px;
       }
+    }
+  }
+  .close-btn {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    background-color: red;
+    background: url("../../img/del.png") no-repeat center center / 100%;
+    opacity: 0.5;
+    left: -75px;
+    top: 20px;
+    cursor: pointer;
+    transition: all 1s;
+    &:hover {
+      opacity: 1;
+      transform: rotate(360deg);
     }
   }
 }

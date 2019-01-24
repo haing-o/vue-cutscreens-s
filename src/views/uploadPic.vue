@@ -18,13 +18,24 @@
 import store from "@/store";
 export default {
   name: "uploadPic",
-  // data() {
-  //   return {
-  //     // 需要截出来的高度，传给每一个组件
-  //     height: 200
-  //   };
-  // },
   store,
+  computed: {
+    delImg() {
+      return this.$store.state.delImg.flag;
+    }
+  },
+  watch: {
+    delImg(newFlag) {
+      if(newFlag) {
+        var list = this.$refs.list;
+        var picList = list.querySelectorAll('.pic-item');
+        list.removeChild(picList[this.$store.state.delImg.i]);
+        setTimeout(() => {
+          this.$store.commit('afterDel');
+        }, 100)
+      }
+    }
+  },
   mounted() {
     // this.$refs.list.appendChild(this.$newCutPicFn());
   },
@@ -47,8 +58,13 @@ export default {
         // 将图片添加入state
         var img = new Image();
         img.src = src;
-        that.$store.commit("addImg", img);
-        that.$refs.list.appendChild(that.$newCutPicFn(src));
+        var key = new Date();
+        var payload = {
+          imgList: img,
+          key: key
+        }
+        that.$store.commit("addImg", payload);
+        that.$refs.list.appendChild(that.$newCutPicFn(src, key));
         setTimeout(function() {
           window.scrollTo(0, document.body.scrollHeight);
         }, 0);
@@ -85,7 +101,7 @@ export default {
       canvas.width = 1000;
       canvas.height = h * images.length;
       for (let i = 0; i < images.length; i++) {
-        var img = images[i];
+        var img = images[i].imgList;
         context.drawImage(
           img,
           0,
@@ -101,7 +117,8 @@ export default {
       var src = canvas.toDataURL("image/jpeg", 1.0);
       this.$store.commit("setSrc", src);
       this.$store.commit("changeCurrent", "Completed");
-    }
+    },
+    
   }
 };
 </script>
@@ -119,6 +136,7 @@ export default {
     margin-left: 85px;
     border-radius: 20px;
     position: relative;
+    transition: all 2s;
     .text {
       font-size: 30px;
       color: #000;
@@ -170,6 +188,8 @@ export default {
       bottom: 0;
       opacity: 0;
       cursor: pointer;
+      width: 200px;
+      height: 80px;
     }
     .reset-btn {
       background-color: #5d0000;

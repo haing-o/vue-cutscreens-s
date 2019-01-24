@@ -18,7 +18,7 @@
 <script>
 import Upload from "@/views/uploadPic.vue";
 import Completed from "@/views/completedPic.vue";
-import store from "@/store"
+import store from "@/store";
 export default {
   name: "cutSreen",
   data() {

@@ -8,7 +8,11 @@ export default new Vuex.Store({
     height: 200,
     images: [],
     currentCom: 'Upload',
-    completedSrc: ''
+    completedSrc: '',
+    delImg: {
+      i: '',
+      flag: false
+    }
   },
   mutations: {
     changeHeight(state, newH) {
@@ -23,8 +27,16 @@ export default new Vuex.Store({
     clearImgs(state) {
       state.images = [];
     },
-    addImg(state, img) {
-      state.images.push(img);
+    addImg(state, payload) {
+      state.images.push(payload);
+    },
+    delImg(state, i){
+      state.images.splice(i, 1);
+      state.delImg.i = i;
+      state.delImg.flag = true;
+    },
+    afterDel(state) {
+      state.delImg.flag = false;
     }
   }
 })
