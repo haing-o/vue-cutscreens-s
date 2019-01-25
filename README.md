@@ -1,6 +1,6 @@
 # Cut screenShots使用教程
 > Cut screenShots 是一款屏幕截图剪切并拼接工具<br />
-> 上线地址: [Cut screenShots !!](https://guangtt.github.io/vue-cutscreens-s/dist/index.html)
+## 线上地址: [请点击Cut screenShots !!](https://guangtt.github.io/vue-cutscreens-s/dist/index.html)
 
 ## 页面元素介绍
 - 最上侧导航栏用于点击切换视图
