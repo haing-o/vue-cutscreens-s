@@ -1,29 +1,22 @@
-# cutScreen
+# Cut screenShots使用教程
+> Cut screenShots 是一款屏幕截图剪切并拼接工具<br />
+> 上线地址: [Cut screenShots !!](https://guangtt.github.io/vue-cutscreens-s/dist/index.html)
 
-## Project setup
-```
-npm install
-```
+## 页面元素介绍
+- 最上侧导航栏用于点击切换视图
+  <br />`Upload`：用于上传添加图片，拖动拖动条确定图片的裁剪高度。
+  <br />`Completed`：用于放置完成截切拼接后的图片，**右击图片点击另存为图片即可存入本地文件夹**。
+- `Add`按钮：点击按钮选择本地文件夹下的图片文件，可添加入待剪切图片队列。
+- `Start`按钮：点击按钮开始剪切拼接队列中的图片，并跳转到`Upload`视图展示图片。
+- `Reset`按钮：清空当前页面上所有的待剪切图片队列。
+- 图片左侧旗帜图标🚩：点击即使得本张图片不使用公用的裁剪高度，而可以在本张图片上自行定义本张图片的裁剪高度。
+- 图片左侧删除图片🗑：在待剪切队列中删除本张图片。
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 默认规则
+1. 添加图片后，默认图片使用公用的裁剪高度，即拖动一张图片，所有图片的裁剪高度都随之改变。（可点亮旗帜表明不使用公用的裁剪高度）
+2. 裁剪拼接完成后的图片默认宽度是`1000px`。
+3. 裁剪拼接完成后的图片默认背景色为黑色，即宽度没有到`1000px`的图片会用黑色填充。
+4. 裁剪拼接完成后的图片格式为`jpeg`。
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### 一、多张图片剪切同一高度字幕部分
 
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
