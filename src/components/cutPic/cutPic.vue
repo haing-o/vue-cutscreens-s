@@ -74,8 +74,13 @@ export default {
   computed: {
     // 裁剪高度
     cutHeight() {
-      return this.$store.state.height;
+      if (this.special) {
+        return this.$store.state.images[this.order].cutheight;
+      } else {
+        return this.$store.state.height;
+      }
     },
+    specialCutHeight() {},
     // 图片高度
     picHeight() {
       return parseInt(this.$refs.wholePic.clientHeight);
