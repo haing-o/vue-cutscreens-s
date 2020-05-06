@@ -1,12 +1,14 @@
 <template>
   <div id="uploadPic">
     <div class="cut-pic-list" ref="list">
-      <span class="text">click button on the right side to add pictures ......</span>
+      <span class="text">点击右侧按钮上传图片并开始操作</span>
     </div>
     <div class="mybtn">
       <a href="javascript:void (0)" class="mybutton">
         Add
-        <input @change="addPic($event)" ref="selectedPic" class="upload-btn" type="file">
+        <input @change="addPic($event)" ref="selectedPic" 
+        class="upload-btn" 
+        type="file" multiple accept="image/*">
       </a>
       <a href="javascript:void (0)" class="mybutton" @click="startCut">Start !</a>
       <a href="javascript:void (0)" class="mybutton reset-btn" @click="resetPic">Reset</a>
@@ -41,36 +43,38 @@ export default {
   },
   methods: {
     // 上传图片，并显示在页面上
-    addPic(event) {
+    async addPic(event) {
       var that = this;
       var files = this.$refs.selectedPic.files;
       if (files.length == 0) {
         return;
       }
-      var file = files[0];
-      var reader = new FileReader();
-      reader.readAsDataURL(file); // 上传图片
-      reader.onload = function(e) {
-        var src = e.target.result; // 图片的地址
-        // var parent = document.createElement('div');
-        // that.$refs.list.appendChild(parent);
-        // that.$newCutPicFn(src, this.height, parent);
-        // 将图片添加入state
-        var img = new Image();
-        img.src = src;
-        var key = new Date();
-        var payload = {
-          imgList: img,
-          key: key
-        };
-        that.$store.commit("addImg", payload);
-        that.$refs.list.appendChild(that.$newCutPicFn(src, key));
-        setTimeout(function() {
-          window.scrollTo(0, document.body.scrollHeight);
-        }, 0);
-        // 清除已上传的文件信息
-        event.target.value = null;
-      };
+      for(let i=0; i<files.length; i++) {
+        var file = files[i];
+        var reader = new FileReader();
+        reader.readAsDataURL(file); // 上传图片
+        await new Promise(resolve => {
+          reader.onload = function(e) {
+            var src = e.target.result; // 图片的地址
+            // 将图片添加入state
+            var img = new Image();
+            img.src = src;
+            var key = new Date().getTime();
+            var payload = {
+              imgList: img,
+              key: key
+            };
+            that.$store.commit("addImg", payload);
+            that.$refs.list.appendChild(that.$newCutPicFn(src, key));
+            setTimeout(function() {
+              window.scrollTo(0, document.body.scrollHeight);
+            }, 0);
+            resolve();
+          };
+        })
+      }
+      // 清除已上传的文件信息
+      event.target.value = null;
     },
     // 清空所有已经上传的图片
     resetPic() {
@@ -85,12 +89,13 @@ export default {
     },
     // 开始合成图片
     startCut() {
+      const IMG_WIDTH = 1000;
       // 创建canvas
       var canvas = document.createElement("canvas");
       var context = canvas.getContext("2d");
       var images = this.$store.state.images;
       var comHeight = this.$store.state.height;
-      canvas.width = 1000;
+      canvas.width = IMG_WIDTH;
       // 循环图片数组，相加得到canvas的高。
       var canvasHeight = 0;
       for (let i = 0; i < images.length; i++) {
@@ -103,10 +108,10 @@ export default {
       canvas.height = canvasHeight;
       // 换算高宽比例
       var changedH = (img, hei) => {
-        if (img.width <= 1000) {
+        if (img.width <= IMG_WIDTH) {
           return hei;
         } else {
-          return (img.width / 1000) * hei;
+          return parseInt((img.width / IMG_WIDTH) * hei);
         }
       };
       // currentH:目前渲染到的高度
@@ -125,7 +130,7 @@ export default {
             changedH(imgList, img.cutheight),
             0,
             currentH,
-            imgList.width >= 1000 ? 1000 : imgList.width,
+            imgList.width >= IMG_WIDTH ? IMG_WIDTH : imgList.width,
             img.cutheight
           );
           currentH += img.cutheight;
@@ -139,7 +144,7 @@ export default {
             changedH(imgList, comHeight),
             0,
             currentH,
-            imgList.width >= 1000 ? 1000 : imgList.width,
+            imgList.width >= IMG_WIDTH ? IMG_WIDTH : imgList.width,
             comHeight
           );
           currentH += comHeight;
@@ -175,7 +180,8 @@ export default {
       opacity: 0.2;
       position: absolute;
       z-index: 1;
-      left: 8%;
+      left: 50%;
+      transform: translateX(-50%);
       top: 20%;
       -webkit-user-select: none;
       -ms-user-select: none;
