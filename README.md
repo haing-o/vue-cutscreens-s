@@ -1,6 +1,6 @@
 # Cut screenShots使用教程
 > Cut screenShots 是一款屏幕截图剪切并拼接工具<br />
-## 线上地址: [请点击Cut screenShots !!](https://guangtt.github.io/vue-cutscreens-s/dist/index.html)
+## 线上地址: [请点击Cut screenShots !!](https://haing-o.github.io/vue-cutscreens-s/dist/index.html)
 
 ## 页面元素介绍
 - 最上侧导航栏用于点击切换视图
@@ -17,6 +17,4 @@
 2. 裁剪拼接完成后的图片默认宽度是`1000px`。
 3. 裁剪拼接完成后的图片默认背景色为黑色，即宽度没有到`1000px`的图片会用黑色填充。
 4. 裁剪拼接完成后的图片格式为`jpeg`。
-
-### 一、多张图片剪切同一高度字幕部分
 
