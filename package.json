@@ -23,7 +23,7 @@
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "vue-template-compiler": "^2.5.21",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.11.3"
   },
   "postcss": {
     "plugins": {
